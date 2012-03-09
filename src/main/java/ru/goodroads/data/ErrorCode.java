@@ -1,5 +1,6 @@
 package ru.goodroads.data;
 
+// XXX: this class not fully needs
 public enum ErrorCode {
 	
 	OK(0, "Success"),
@@ -9,7 +10,11 @@ public enum ErrorCode {
 	AUTH_NOT_FOUND(62, "Login not found"),
 	
 	REGISTER_EXPECTED_PARAM(71, "Login and/or secret and/or email not setted"),
-	REGISTER_USER_EXISTS(72, "User with its login exists");
+	REGISTER_USER_EXISTS(72, "User with its login exists"),
+	
+	// XXX: Client side error code. Request successful, 
+	// but returned data semantic is not valid
+	CLIENT_SIDE_ERROR(0xaabbccdd, "Client side error");
 
 	private final int code;
 	private final String description;

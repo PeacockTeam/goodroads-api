@@ -1,8 +1,8 @@
-package ru.goodroads.net;
+package ru.goodroads.net.jsonrpc;
 
 import com.google.gson.Gson;
 
-public class ResponseJSONRPC {
+public class Response {
 	private Object result;
 	private ErrorJSONRPC error;
 
@@ -11,13 +11,13 @@ public class ResponseJSONRPC {
 		private int code;
 	}
 	
-	public ResponseJSONRPC(String response) throws ClientJSONRPCException {
+	public Response(String response) throws JSONRPCClientException {
 		Gson gson = new Gson();
 		
-		ResponseJSONRPC tmp = (ResponseJSONRPC) gson.fromJson(response, ResponseJSONRPC.class);
+		Response tmp = (Response) gson.fromJson(response, Response.class);
 		
 		if (tmp == null || tmp.error == null || tmp.result == null) {
-			throw new ClientJSONRPCException("not json rpc response: \"" + response + "\"");
+			throw new JSONRPCClientException("not json rpc response: \"" + response + "\"");
 		}
 		
 		this.result = tmp.result;

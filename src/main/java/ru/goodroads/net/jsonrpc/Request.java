@@ -1,13 +1,13 @@
-package ru.goodroads.net;
+package ru.goodroads.net.jsonrpc;
 
 import com.google.gson.Gson;
 
 @SuppressWarnings("unused")
-public class RequestJSONRPC {
+public class Request {
 	private String method;
 	private Object params;
 	
-	public RequestJSONRPC(String method, Object params) {
+	public Request(String method, Object params) {
 		this.method = method;
 		this.params = params;
 	}

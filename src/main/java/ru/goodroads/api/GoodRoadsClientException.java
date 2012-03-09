@@ -1,8 +1,9 @@
 package ru.goodroads.api;
 
 import ru.goodroads.data.ErrorCode;
+import ru.goodroads.net.jsonrpc.JSONRPCClientException;
 
-public class GoodRoadsClientException extends Exception {
+public class GoodRoadsClientException extends JSONRPCClientException {
 
 	private final int code;
 	private static final long serialVersionUID = 1L;
@@ -15,6 +16,11 @@ public class GoodRoadsClientException extends Exception {
 	public GoodRoadsClientException(String message, int code) {
 		super(message);
 		this.code = code;
+	}
+	
+	public GoodRoadsClientException(String message) {
+		super(message);
+		this.code = ErrorCode.CLIENT_SIDE_ERROR.getCode();
 	}
 
 	public int getCode() {

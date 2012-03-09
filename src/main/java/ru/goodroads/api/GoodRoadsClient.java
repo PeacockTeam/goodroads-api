@@ -3,93 +3,82 @@ package ru.goodroads.api;
 import java.util.ArrayList;
 
 import ru.goodroads.data.Auth;
-import ru.goodroads.data.Dummy;
-import ru.goodroads.data.ErrorCode;
 import ru.goodroads.data.Hole;
 import ru.goodroads.data.HoleSet;
 import ru.goodroads.data.Register;
-import ru.goodroads.net.ClientJSONRPC;
-import ru.goodroads.net.ClientJSONRPCException;
-import ru.goodroads.net.ResponseJSONRPC;
+import ru.goodroads.net.jsonrpc.JSONRPCClient;
+import ru.goodroads.net.jsonrpc.JSONRPCClientException;
 import ru.goodroads.utils.SHA256;
 
 public class GoodRoadsClient {
 
 	private static final String GOODROADS_URL = "http://goodroads.ru/another/api.php";
 	
-	private ClientJSONRPC rpcClient = new ClientJSONRPC(GOODROADS_URL);
+	// XXX: one instance?
+	private final JSONRPCClient rpcClient = new JSONRPCClient(GOODROADS_URL, new GoodRoadsErrorHandler());
+	
+	private String mSessionKey = null;
 	
 	public GoodRoadsClient() {
-		// TODO: initialize auth token (currently through cookie)
+		// TODO: initialize auth token, currently through cookie.
+		// Steph think about add it in json as 'session'
 	}
 	
-	public boolean register(String login, String password, String email) throws ClientJSONRPCException, GoodRoadsClientException {
+	public boolean register(String login, String password, String email) throws JSONRPCClientException {
 		String digest = SHA256.compute(password);
 		
 		Register register = new Register(login, digest, email);
 		
-		ResponseJSONRPC result = rpcClient.call(register);
+		Object result = rpcClient.call(register);
 
-		checkErrorCode(result);
-		
-		System.out.println(result.getResult());
+		System.out.println(result);
 		
 		return true;
 	}
 	
-	public boolean auth(String login, String password) throws ClientJSONRPCException, GoodRoadsClientException {
+	public boolean auth(String login, String password) throws JSONRPCClientException {
 		String digest = SHA256.compute(password);
 		
 		Auth auth = new Auth(login, digest);
 		
-		ResponseJSONRPC result = rpcClient.call(auth);
+		String session = (String) rpcClient.call(auth);
 
-		checkErrorCode(result);
+		if (session.compareTo("") == 0) {
+			throw new GoodRoadsClientException("Session not found");
+		}
 		
-		System.out.println(result.getResult());
+		setSessionKey(session);
 		
-		return true;
-	}
-	
-	public boolean addHoleSet(HoleSet holeSet) throws ClientJSONRPCException, GoodRoadsClientException {
-		
-		ResponseJSONRPC result = rpcClient.call(holeSet);
-		
-		checkErrorCode(result);
-		
-		System.out.println(result.getResult());
+		System.out.println("Session key: " + session);
 		
 		return true;
 	}
 	
-	public boolean addHole(Hole hole) throws ClientJSONRPCException, GoodRoadsClientException {
-		
-		ResponseJSONRPC result = rpcClient.call(hole);
-		
-		checkErrorCode(result);
+	public boolean addHoleSet(HoleSet holeSet) throws JSONRPCClientException {
+		Object result = rpcClient.call(holeSet);
 		
 		System.out.println(result);
 		
 		return true;
 	}
 	
-	// TODO: for more cleanly register error code handler in ClientJSONRPC
-	private void checkErrorCode(ResponseJSONRPC response) throws GoodRoadsClientException {
-		int code = response.getErrorCode();
-		String info = response.getErrorInfo();
+	public boolean addHole(Hole hole) throws JSONRPCClientException {
+		Object result = rpcClient.call(hole);
 		
-		if (ErrorCode.fromCode(code) == null || ErrorCode.fromCode(code) != ErrorCode.OK) {
-			throw new GoodRoadsClientException(info + " (" + code + ")", code);
-		}
+		System.out.println(result);
+		
+		return true;
 	}
-	
+
 	@SuppressWarnings("serial")
 	public static void main(String[] args) {
 		GoodRoadsClient grc = new GoodRoadsClient();
 		
 		try {
-			//grc.register("hello2", "omgomgomg", "hello2@mail.ru");
-			grc.auth("hello2", "omgomgomg");
+			//grc.register("hello2J", "omgomgomg", "hello2@mail.ru");
+			grc.setSessionKey("Q8dz5UmGC4u7Bg05M61FrJhdMGKDE4tV2MKvhx3jqmgsJgmVbdbJn9mzFx4Jqmfi");
+			
+			// grc.auth("hello2", "omgomgomg");
 
 			grc.addHole(new Hole(1.2, 1.2, 1.2, 1));
 
@@ -99,12 +88,20 @@ public class GoodRoadsClient {
 					add(new Hole(1.2, 1.2, 1.2, 1));
 				}
 			}));
-		} catch (ClientJSONRPCException e) {
-			// Not valid response (not jsonrpc)?
-			e.printStackTrace();
 		} catch (GoodRoadsClientException e) {
 			// Some response error (not valid login/pwd or anything)
 			e.printStackTrace();
+		} catch (JSONRPCClientException e) {
+			// Not valid response (not jsonrpc)?
+			e.printStackTrace();
 		}
+	}
+
+	public void setSessionKey(String mSessionKey) {
+		this.mSessionKey = mSessionKey;
+	}
+
+	public String getSessionKey() {
+		return mSessionKey;
 	}
 }

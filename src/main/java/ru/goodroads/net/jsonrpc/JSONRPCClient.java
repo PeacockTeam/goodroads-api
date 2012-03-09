@@ -1,4 +1,4 @@
-package ru.goodroads.net;
+package ru.goodroads.net.jsonrpc;
 
 import java.io.IOException;
 
@@ -11,33 +11,48 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-public class ClientJSONRPC {
+// TODO:
+//
+// - add cookie support?
+// - think on deserialize result data. Add Class.type in 'call'?
+
+public class JSONRPCClient {
 
 	private String mUrl;
+	private IErrorHandler mErrorHandler = new DefaultErrorHandler();
 	
-	// TODO: add cookie support?
-	
-	public ClientJSONRPC(String url) {
+	public JSONRPCClient(String url, IErrorHandler errorHandler) {
 		mUrl = url;
+		mErrorHandler = errorHandler;
 	}
 	
-	public ResponseJSONRPC call(RequestJSONRPC request) throws ClientJSONRPCException {
+	public IErrorHandler getmErrorHandler() {
+		return mErrorHandler;
+	}
+	
+	public void setErrorHandler(IErrorHandler errorHandler) {
+		this.mErrorHandler = errorHandler;
+	}
+	
+	public Response call(Request request) throws JSONRPCClientException {
 		
 		System.out.println(request);
 		
-		ResponseJSONRPC response = new ResponseJSONRPC(postData(request.toString()));
+		Response response = new Response(postData(request.toString()));
+		
+		getmErrorHandler().checkIt(response);
 		
 		return response;
 	}
 	
-	public ResponseJSONRPC call(String method, Object params) throws ClientJSONRPCException {		
-		return call(new RequestJSONRPC(method, params));
+	public Response call(String method, Object params) throws JSONRPCClientException {		
+		return call(new Request(method, params));
 	}
 	
-	public ResponseJSONRPC call(Object params) throws ClientJSONRPCException {
+	public Object call(Object params) throws JSONRPCClientException {
 		String method = getCurrentMethodName();
 		
-		return call(new RequestJSONRPC(method, params));
+		return call(new Request(method, params)).getResult();
 	}
 	
 	private String getCurrentMethodName() {
