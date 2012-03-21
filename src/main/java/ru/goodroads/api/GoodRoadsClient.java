@@ -80,12 +80,12 @@ public class GoodRoadsClient {
 			
 			// grc.auth("hello2", "omgomgomg");
 
-			grc.addHole(new Hole(1.2, 1.2, 1.2, 1));
+			grc.addHole(new Hole());
 
 			grc.addHoleSet(new HoleSet(new ArrayList<Hole>() {
 				{
-					add(new Hole(1.2, 1.2, 1.2, 1));
-					add(new Hole(1.2, 1.2, 1.2, 1));
+					add(new Hole());
+					add(new Hole());
 				}
 			}));
 		} catch (GoodRoadsClientException e) {
