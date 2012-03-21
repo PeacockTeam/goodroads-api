@@ -13,11 +13,16 @@ public class Response {
 	
 	public Response(String response) throws JSONRPCClientException {
 		Gson gson = new Gson();
+		Response tmp = null;
 		
-		Response tmp = (Response) gson.fromJson(response, Response.class);
+		try {
+			tmp = (Response) gson.fromJson(response, Response.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		if (tmp == null || tmp.error == null || tmp.result == null) {
-			throw new JSONRPCClientException("not json rpc response: \"" + response + "\"");
+			throw new JSONRPCClientException("bad json data: \"" + response + "\"");
 		}
 		
 		this.result = tmp.result;
