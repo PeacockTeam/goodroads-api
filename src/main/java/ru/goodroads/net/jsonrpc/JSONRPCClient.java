@@ -4,11 +4,13 @@ import java.io.IOException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.util.EntityUtils;
 
 // TODO:
@@ -20,10 +22,13 @@ public class JSONRPCClient {
 
 	private String mUrl;
 	private IErrorHandler mErrorHandler = new DefaultErrorHandler();
+	private HttpClient httpclient = null;
 	
 	public JSONRPCClient(String url, IErrorHandler errorHandler) {
 		mUrl = url;
 		mErrorHandler = errorHandler;
+				        
+        httpclient = new DefaultHttpClient();
 	}
 	
 	public IErrorHandler getmErrorHandler() {
@@ -61,7 +66,6 @@ public class JSONRPCClient {
 	}
 	
 	private String postData(String request) {
-	    HttpClient httpclient = new DefaultHttpClient();
 	    HttpPost httppost = new HttpPost(mUrl);
 
 	    try {        
@@ -89,8 +93,6 @@ public class JSONRPCClient {
 	    	e.printStackTrace();
 	    } catch (IOException e) {
 	    	e.printStackTrace();
-	    } finally {
-	    	try { httpclient.getConnectionManager().shutdown(); } catch (Exception ignore) {}
 	    }
 	    
 	    return null;
