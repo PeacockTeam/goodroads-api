@@ -1,5 +1,6 @@
 package ru.goodroads.data;
 
+import java.lang.annotation.Retention;
 import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
@@ -10,18 +11,17 @@ public class Hole {
 	@SerializedName("lat") private double lat;
 	@SerializedName("lng") private double lon;
 	@SerializedName("holeSize") private double size;
-	@SerializedName("holeType") private Type type;
-	@SerializedName("aclX") private float aclX;
-	@SerializedName("aclY") private float aclY;
-	@SerializedName("aclZ") private float aclZ;
+	@SerializedName("holeType") private int type = Type.Auto.ordinal();
+	@SerializedName("Aclx") private float aclX;
+	@SerializedName("Acly") private float aclY;
+	@SerializedName("Aclz") private float aclZ;
 	@SerializedName("speed") private float speed;
-	@SerializedName("date") private long time;
-	
-	public enum Type {
-	    Auto,
-	    UserDefined
-	}
+	@SerializedName("Date") private long time;
       
+	public enum Type {
+		Auto,
+		UserDefined;
+	}
 	public Hole() {
 		this.time = new Date().getTime();
 	}
@@ -32,7 +32,12 @@ public class Hole {
 	}
 
 	public Hole setType(Type type) {
-		this.type = type;
+		this.type = type.ordinal();
+		return this;
+	}
+	
+	public Hole setSpeed(float speed) {
+		this.speed = speed;
 		return this;
 	}
 
@@ -46,11 +51,6 @@ public class Hole {
 		this.aclX = aclX;
 		this.aclY = aclY;
 		this.aclZ = aclZ;
-		return this;
-	}
-
-	public Hole setSpeed(float speed) {
-		this.speed = speed;
 		return this;
 	}
 }
