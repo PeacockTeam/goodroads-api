@@ -13,6 +13,7 @@ import ru.goodroads.utils.SHA256;
 public class GoodRoadsClient {
 
 	private static final String GOODROADS_URL = "http://goodroads.ru/another/api.php";
+	// private static final String GOODROADS_URL = "http://localhost/another/api.php";
 	
 	// XXX: one instance?
 	private final JSONRPCClient rpcClient = new JSONRPCClient(GOODROADS_URL, new GoodRoadsErrorHandler());
@@ -29,7 +30,7 @@ public class GoodRoadsClient {
 		
 		Register register = new Register(login, digest, email);
 		
-		Object result = rpcClient.call(register);
+		Object result = rpcClient.call("register", register);
 
 		System.out.println(result);
 		
@@ -41,7 +42,7 @@ public class GoodRoadsClient {
 		
 		Auth auth = new Auth(login, digest);
 		
-		String session = (String) rpcClient.call(auth);
+		String session = (String) rpcClient.call("auth", auth);
 
 		if (session.compareTo("") == 0) {
 			throw new GoodRoadsClientException("Session not found");
@@ -55,7 +56,7 @@ public class GoodRoadsClient {
 	}
 	
 	public boolean addHoleSet(HoleSet holeSet) throws JSONRPCClientException {
-		Object result = rpcClient.call(holeSet);
+		Object result = rpcClient.call("addHoleSet", holeSet);
 		
 		System.out.println(result);
 		
@@ -63,7 +64,7 @@ public class GoodRoadsClient {
 	}
 	
 	public boolean addHole(Hole hole) throws JSONRPCClientException {
-		Object result = rpcClient.call(hole);
+		Object result = rpcClient.call("addHole", hole);
 		
 		System.out.println(result);
 		
@@ -75,12 +76,12 @@ public class GoodRoadsClient {
 		GoodRoadsClient grc = new GoodRoadsClient();
 		
 		try {
-			//grc.register("hello2J", "omgomgomg", "hello2@mail.ru");
+			//grc.register("hello2", "omgomgomg", "hello2@mail.ru");
 			grc.setSessionKey("Q8dz5UmGC4u7Bg05M61FrJhdMGKDE4tV2MKvhx3jqmgsJgmVbdbJn9mzFx4Jqmfi");
 			
-			// grc.auth("hello2", "omgomgomg");
+			grc.auth("hello2", "omgomgomg");
 
-			grc.addHole(new Hole());
+			//grc.addHole(new Hole());
 
 			grc.addHoleSet(new HoleSet(new ArrayList<Hole>() {
 				{
