@@ -11,6 +11,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import ru.goodroads.utils.ZIP;
+
 // TODO:
 //
 // - add cookie support?
@@ -21,6 +23,7 @@ public class JSONRPCClient {
 	private String mUrl;
 	private IErrorHandler errorHandler = new DefaultErrorHandler();
 	private HttpClient httpclient = null;
+	private boolean compress = false;
 	
 	public JSONRPCClient(String url, IErrorHandler errorHandler) {
 		this.mUrl = url;
@@ -29,6 +32,14 @@ public class JSONRPCClient {
         this.httpclient = new DefaultHttpClient();
 	}
 	
+	public boolean isCompress() {
+		return compress;
+	}
+
+	public void setCompress(boolean compress) {
+		this.compress = compress;
+	}
+
 	public IErrorHandler getErrorHandler() {
 		return errorHandler;
 	}
@@ -68,7 +79,12 @@ public class JSONRPCClient {
 	    	//httppost.setHeader("Accept-Encoding", "gzip,deflate");	    
 	    	
 	        // XXX: 'data=' is redundantly, but needs. Fix it on server side
-	        httppost.setEntity(new StringEntity("data=" + request + "\r\n"));
+	    	String requestString = "data=" + request; 
+	    	if (isCompress()) {
+	    		requestString = "data=" + ZIP.compressToString(request, "data") + "&zip=1";
+	    	}
+	    	
+	    	httppost.setEntity(new StringEntity(requestString));
 	        
 	        HttpResponse response = httpclient.execute(httppost);
 	        
