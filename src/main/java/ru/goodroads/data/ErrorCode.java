@@ -23,7 +23,7 @@ public enum ErrorCode {
 		this.code = code;
 		this.description = description;
 	}
-	
+
 	public int getCode() {
 		return code;
 	}
@@ -44,5 +44,9 @@ public enum ErrorCode {
 	@Override
 	public String toString() {
 		return code + ": " + description;
+	}
+
+	public String getLocalizedDescription() {
+		return "Как дела?";
 	}
 }

@@ -26,4 +26,10 @@ public class GoodRoadsClientException extends JSONRPCClientException {
 	public int getCode() {
 		return code;
 	}
+	
+	@Override
+	public String getLocalizedMessage() {
+		// XXX: now only russian, check locale
+		return ErrorCode.fromCode(code).getLocalizedDescription();
+	}
 }
