@@ -13,11 +13,6 @@ import org.apache.http.util.EntityUtils;
 
 import ru.goodroads.utils.ZIP;
 
-// TODO:
-//
-// - add cookie support?
-// - think on deserialize result data. Add Class.type in 'call'?
-
 public class JSONRPCClient {
 
 	private String mUrl;
