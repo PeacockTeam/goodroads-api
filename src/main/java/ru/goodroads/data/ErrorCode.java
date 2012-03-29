@@ -47,6 +47,7 @@ public enum ErrorCode {
 	}
 
 	public String getLocalizedDescription() {
-		return "Как дела?";
+		// TODO:
+		return code + ": " + description;
 	}
 }
