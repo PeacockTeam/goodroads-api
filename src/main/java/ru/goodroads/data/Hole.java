@@ -1,12 +1,15 @@
 package ru.goodroads.data;
 
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
 
 @SuppressWarnings("unused")
-public class Hole {
+public class Hole implements Serializable {
+	
+	private static final long serialVersionUID = -8606143116953832890L;
 	
 	@SerializedName("lat") private double lat;
 	@SerializedName("lng") private double lon;
@@ -31,6 +34,10 @@ public class Hole {
 		return this;
 	}
 
+	public double getSize() {
+		return size;
+	}
+
 	public Hole setType(Type type) {
 		this.type = type.ordinal();
 		return this;
@@ -45,6 +52,14 @@ public class Hole {
 		this.lat = lat;
 		this.lon = lon;
 		return this;
+	}
+	
+	public double getLat() {
+		return lat;
+	}
+
+	public double getLon() {
+		return lon;
 	}
 	
 	public Hole setAccelerometer(float aclX, float aclY, float aclZ) {
