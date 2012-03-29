@@ -25,6 +25,10 @@ public class GoodRoadsClient {
 		// Steph think about add it in json as 'session'
 	}
 	
+	// XXX: use annotation for json-rpc methods?
+	
+	/* User */
+	
 	public boolean register(String login, String password, String email) throws JSONRPCClientException {
 		String digest = SHA256.compute(password);
 		
@@ -55,6 +59,38 @@ public class GoodRoadsClient {
 		return true;
 	}
 	
+	public boolean rememberPassword() throws JSONRPCClientException {		
+		throw new GoodRoadsClientException("Not implemented");
+	}
+	
+	public boolean vkauth() throws JSONRPCClientException {		
+		throw new GoodRoadsClientException("Not implemented");
+	}
+	
+	public boolean bindUser() throws JSONRPCClientException {		
+		throw new GoodRoadsClientException("Not implemented");
+	}
+		
+	/* Info */
+	
+	public boolean lookup() throws JSONRPCClientException {		
+		throw new GoodRoadsClientException("Not implemented");
+	}
+	
+	public boolean alert() throws JSONRPCClientException {		
+		throw new GoodRoadsClientException("Not implemented");
+	}
+	
+	public boolean getUserRating() throws JSONRPCClientException {		
+		throw new GoodRoadsClientException("Not implemented");
+	}
+	
+	public boolean getScreen() throws JSONRPCClientException {		
+		throw new GoodRoadsClientException("Not implemented");
+	}
+	
+	/* Path-hole */
+	
 	public boolean addHoleSet(HoleSet holeSet) throws JSONRPCClientException {
 		Object result = rpcClient.call("addHoleSet", holeSet);
 		
@@ -70,7 +106,11 @@ public class GoodRoadsClient {
 		
 		return true;
 	}
-
+	
+	public boolean getHoles() throws JSONRPCClientException {		
+		throw new GoodRoadsClientException("Not implemented");
+	}
+	
 	@SuppressWarnings("serial")
 	public static void main(String[] args) {
 		GoodRoadsClient grc = new GoodRoadsClient();
